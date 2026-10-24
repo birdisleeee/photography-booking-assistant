@@ -1,179 +1,165 @@
-# photo-tools · 摄影预约与自助排单工具
+# Photography Booking Assistant
 
 [简体中文](#简体中文) · [English](#english)
 
 ## 简体中文
 
-**面向漫展摄影、Cosplay 约拍的开源自助预约与自动排单工具。** 客人自己填表、选择空闲时段，系统自动生成预约记录并占用时段；摄影师在后台管理拍摄排期、收款记录和通知。可以部署成网页，手机和电脑都能用。
+**摄影排单助手：面向漫展摄影、Cosplay 约拍的开源自助预约与自动排单系统。** 客人打开链接，填写预约表格并选择空闲时段；后端自动登记订单、占用时段，摄影师在管理后台查看排期、登记收款，并按需开启值守通知。手机和电脑都能使用。
 
-适用于漫展排单、摄影预约、约拍时间管理和多届活动记录。自动排单指按客人选择的可用时段登记预约并防止重复占用，不会擅自替客人调整拍摄时间。
+这是一个独立的摄影排单项目，包含自部署网页、公共托管服务和 Android 客户端。自动排单指预约客人选中的可用时段、阻止重复占用，不会自动挪动已有预约。
 
-| 小工具 | 用来做什么 |
+### 从预约到拍摄
+
+1. **摄影师发布排期**：新开一届，设置年份、名称、拍摄日期、时段、价格、须知和联系方式，预览客人页面后确认发布。
+2. **客人自助填写**：打开预约链接，选择时段，填写 CN、联系方式、角色和备注，可上传参考图；提交后生成订单号和预约记录。
+3. **后台集中管理**：按日期查看拍摄时间表，核对付款、调整记录，活动结束后归档；原预约和收款记录继续保留。
+
+自部署版的客人用 CN 注册并登录，在「我的预约」查看历届记录。CN 和电话按账号预填，支持点击订单查看详情、复制订单号、保存预约截图和确认后取消。旧预约可搜索后关联；仅凭 CN 关联时只展示场次、CN 和角色，核对原手机号或订单号后才获得正常预约权限。已取消订单不接受新增关联。
+
+### 摄影师可以管理什么
+
+| 功能 | 使用方式 |
 | --- | --- |
-| [拍摄排单](./paidan-booking) | 客妹填表预约，后端自动登记排单；摄影师管理拍摄安排和收款，还可开启后台值守通知。 |
+| 多届排期与归档 | 按年份和届次整理，电脑显示多日时间表，手机使用抽屉导航。 |
+| 统计主页 | 汇总有效订单、已收与待收金额、按 CN 去重的客人数；趋势节点可悬停或点按查看数值。 |
+| 订单与收款 | 总览显示条数，已支付／未支付列表显示金额；支持定金、免单、优惠原因和凭证，以及确认后批量修改付款状态。 |
+| 图片资料 | 上传参考图和优惠凭证；可选私有图片存储，通过预约或管理权限查看。 |
+| 客人账号与旧单关联 | 客人查看自己的历届预约；摄影师可将旧记录关联到已注册账号，无需重建订单。 |
 
-**也可以申请使用我们提供的公共后台。** [打开注册申请页](https://public-paidan.nyachu.site/app) 或 [下载安卓 APK](https://public-paidan.nyachu.site/download/app.apk)，提交申请后等待运营者审核并分配额度。账号和任何新增额度都不会自动批准；首发最多批准 3 个账号。详细规则见 [公共托管版说明](./public-service/README.md)。自行部署原版则使用自己的账号和资源，不受公共服务的分发额度约束。
+已收定金计入收款，尾款计入待收，免单为 0 元，取消订单不计入金额统计。没有记录金额的旧单会单独提示，不会按现价或备注中的数字猜测。
 
-## 拍摄排单：填表预约，自动排期
+**这里只登记收款记录，不代收款、不扣款。** 客人点击「已确认」会通知摄影师核对，不会自动认定到账。详细操作见 [功能与使用流程](./paidan-booking/README.md)。
 
-摄影师先设置本届的拍摄日期、时段、单价、须知和联系方式，预览并确认后发布。客妹打开链接，选择空闲时段、填写 CN 和角色等信息，提交后自动生成订单并占用时段，不必再手动把每份预约抄进表格。
+### 可选的脚本值守通知
 
-- **客人注册后自助预约（自部署版）**：用 CN 注册登录，查看本人历届预约；CN 和电话按账号预填，订单列表点击整行查看详情，支持保存预约截图、复制订单号和二次确认取消。
-- **摄影师集中管理**：按年份、届次整理记录，按天查看时间表；有效预约、已支付和未支付都能点开查看与筛选。
-- **登记收款**：支持正常单价、免单、优惠价和定金记录，优惠可填写原因并上传凭证。
-- **图片独立存储（可选）**：参考图和优惠凭证可保存到私有图片桶，通过原有权限校验查看；订单与排单锁继续保存到数据库。见 [配置说明](./IMAGE_STORAGE.md)。
-- **多届归档**：结束后停止新预约，保留记录，仍可补充备注和调整收款。
-- **手机也能操作**：手机端使用汉堡菜单抽屉，电脑端显示侧栏和多日时间表。
+不必一直开着后台等新订单。在「设置 → 脚本值守」选择渠道并配置后，服务端会为 **新预约、取消预约、客人付款通知**发送提醒。关闭网页或电脑后仍可继续处理，发送失败会有限重试。
 
-自部署版的客人页面采用全屏布局、左下角账号资料区和手机抽屉导航；「我的预约」用紧凑表格展示记录。摄影师后台仍保留按日期排列的拍摄时间表。公共托管版与 APK 是独立发行，功能以 [公共版说明](./public-service/README.md) 为准。
-
-旧预约默认搜索全部场次：CN 必填，手机号和订单号选填；勾选并二次确认后即可关联，已关联结果会置灰。仅凭 CN 关联时只展示场次、CN 和角色；核对原手机号或订单号后可获取正常预约权限。摄影师也可在后台列表批量勾选旧记录，搜索已注册的客人账号并二次确认关联，无需补录手机号或重建订单。
-
-登录或刷新后台默认进入统计主页，汇总历届有效订单、已收/待收金额和按 CN 去重的客人数，提供按拍摄日期归集的月度趋势、付款状态分布和各届汇总；点击届次再进入时间表。趋势节点支持悬停、键盘聚焦和手机点按查看数值。批量付款弹窗在内部滚动，底部操作栏固定且有不透明背景。
-
-全部订单右上角点击「关联」才进入勾选模式，按钮变为「取消／确认」。已支付、未支付列表保留关键词搜索；点击搜索框右侧「批量修改付款状态」才显示勾选框，并切换为「取消／确认」。取消或保存后收起勾选框；支持已付款、未付款、定金和免单；保存前逐单展示金额并二次确认。已有金额、优惠原因与凭证默认保留；缺金额的旧记录需先补充核对，已取消订单不可处理。每批最多50条，有记录冲突时整批不保存，网络重试不会重复登记。
-
-
-总览保留有效预约、已支付、未支付的订单条数；进入列表后，两张卡片显示本届已支付金额和未支付金额。已收定金计入收款，尾款计入待收；取消订单不计入，免单为0元。只汇总已记录金额，未记金额的旧单单独提示，不按现单价或备注数字猜测。
-
-## 可选的后台值守通知
-
-不必一直开着管理页面等订单。在后台「设置 → 脚本值守」开启并配置渠道后，**新预约、取消预约、客人付款通知**会自动发送到你选择的接收端。值守在服务端运行，关闭网页后仍会继续处理通知；发送失败会有限重试。
-
-| 通知渠道 | 需要自己配置什么 |
+| 通知渠道 | 需要准备 |
 | --- | --- |
-| 通用 Webhook | 接收通知的 HTTPS 地址，可选鉴权 Token |
-| 企业微信 | 群机器人 Webhook 地址 |
-| 飞书 | 群机器人 Webhook 地址 |
-| Telegram | Bot Token 和 Chat ID |
-| **邮件** | Resend API Key、已验证域名下的发件地址、收件邮箱 |
+| 通用 Webhook | 接收通知的 HTTPS 网址，可选鉴权 Token。 |
+| 企业微信 | 群机器人 Webhook 地址。 |
+| 飞书 | 自定义机器人 Webhook 地址。 |
+| Telegram | Bot Token 和 Chat ID。 |
+| 邮件 | Resend API Key、已验证域名的发件地址、收件邮箱。 |
 
-渠道由使用者自行选择，当前每个实例配置一个渠道，不绑定 QQ 或其他个人账号。邮件可以发到 QQ、163、Gmail 等收件邮箱；发信通过 Resend，不能直接填写邮箱登录密码或 SMTP 授权码。
+当前每个实例配置一个渠道，由使用者自行选择，不绑定作者的 QQ 或其他个人账号。邮件可发到 QQ、163、Gmail 等邮箱，发信使用 Resend，不使用邮箱密码或 SMTP 授权码。
 
-值守默认关闭，通知凭据默认空白。保存设置和发送测试通知都需要二次确认。现有自动化测试覆盖模拟发送、失败重试和页面操作；**真实渠道是否收到消息，需要配置自己的接收端后实测**。邮件服务接受请求也不等于邮件已送达，请检查收件箱、垃圾邮件或发信服务记录。
+值守默认关闭，凭据为空。自动化测试覆盖模拟发送和失败重试；**自己的接收端是否真正收到消息，需要配置后实测**。邮件接口接受请求不等于邮件已到收件箱。设置步骤见 [值守与邮件配置](./paidan-booking/WATCHER.md)。
 
-详细步骤见 [值守与邮件设置](./paidan-booking/WATCHER.md)。客人点击「已确认」只会发送付款通知，不会自动确认到账；本工具不代收款、不扣款。
+有自己的 AI Agent，也可让它询问通知去向后协助配置内置渠道，或编写自己的 Webhook 接收服务和定时查询脚本，见 [Agent 接入说明](./paidan-booking/AGENT_SETUP.md)。**运行预约和内置通知不需要 AI Agent，也不需要 AI API Key。**
 
-**有自己的 Agent 也可以接入。** 让 Agent 先询问你希望通知发到哪里、提醒哪些事件，再配置内置渠道，或编写自己的 Webhook 接收服务、定时查询脚本。具体流程、接口和防重复通知约定见 [给 Agent 的接入说明](./paidan-booking/AGENT_SETUP.md)。拥有 GitHub 账号或下载代码本身不会自动启动值守任务。
+### 从自己的空白实例开始
 
-## 安装与上手：选择适合你的方式
+代码不附带作者的漫展存档、客人订单、付款凭证、联系方式、管理密码或通知凭据。首次部署没有预设活动，使用者配置自己的密钥并发布第一届后，客人才可以预约。
 
-**没有 AI Agent 也能完整使用。** 部署完成后，预约、查询、自动排单和内置通知都由项目后端运行，不依赖 AI，也不需要一直开着电脑。
+### 使用与安装
 
-| 你的情况 | 从哪里开始 | 需要做什么 |
+| 适合谁 | 选择方式 | 下一步 |
 | --- | --- | --- |
-| **直接使用公共服务** | [公共版与 APK 使用说明](./public-service/README.md) | 下载 APK 或打开网页 → 申请注册 → 等待运营者批准并分配额度 → 创建场次与分享自己的预约链接 |
-| **没有 AI Agent，自己安装** | [手动安装说明书](./paidan-booking/DEPLOYMENT.md) | 下载代码 → 安装工具 → 创建自己的存储 → 部署网页 → 设置管理员密钥 → 创建第一届 → 按需配置通知 |
-| **有 AI Agent，让它协助** | [AI Agent 操作说明书](./paidan-booking/AGENT_SETUP.md) | 给 Agent 仓库和任务说明 → 确认部署账号及通知去向 → 自己完成登录与凭据填写 → 让 Agent 部署并验证 |
+| 想直接使用，不自行部署 | 公共托管网页或 Android APK | [申请注册](https://public-paidan.nyachu.site/app)／[下载 APK](https://public-paidan.nyachu.site/download/app.apk)，等待运营者批准账号并分配配额。新增配额也需申请。 |
+| 想自己掌握部署和数据，没有 AI Agent | 手动安装自部署版 | 按 [手动安装说明](./paidan-booking/DEPLOYMENT.md) 创建自己的存储、部署网页、配置密钥和首届活动。 |
+| 有 AI Agent，希望它协助安装 | 同一套自部署版 | 参考 [AI Agent 操作说明](./paidan-booking/AGENT_SETUP.md)，确认部署账号和通知去向，由自己填写登录及秘密信息。 |
 
-手动安装不要求 GitHub 账号，可下载 ZIP；有 GitHub 账号也不会自动启动 Agent 或值守。当前附带可直接照做的 Cloudflare 部署示例，其他平台需要适配后端。两条路线使用同一套代码，新实例都是空白界面。
+公共版使用独立后台，功能与额度规则见 [公共服务说明](./public-service/README.md)。**APK 需要联网，连接公共服务；不是离线排单应用，也不提供原生系统推送。** 客人使用摄影师分享的网页链接即可，无需安装 APK。自部署使用自己的资源，不需要向公共服务申请配额。
 
-## 从空白界面开始
+可以直接下载仓库 ZIP，无需 GitHub 账号；使用 Git 则执行：
 
-下载并部署后，没有预置漫展、历史存档、客户订单或收款记录，也没有我们的联系方式和通知凭据。使用者设置自己的管理员密钥，在后台创建并发布第一届后，客人页面才开放预约。
+```sh
+git clone https://github.com/birdisleeee/photography-booking-assistant.git
+cd photography-booking-assistant/paidan-booking
+```
 
-可以部署在能运行后端接口、保存数据的平台上。仓库提供 Cloudflare 部署示例，也可以适配自己的服务器和数据库；不能只上传 HTML 到静态托管后就完成预约和通知功能。
+然后继续 [部署步骤](./paidan-booking/DEPLOYMENT.md)。当前提供可照做的 Cloudflare 部署示例；其他服务器和数据库需要适配后端。只上传 HTML 到静态托管不能运行预约、账号和通知功能。
 
-- [完整功能与使用流程](./paidan-booking/README.md)
-- [部署说明](./paidan-booking/DEPLOYMENT.md)
-- [后台值守与邮件配置](./paidan-booking/WATCHER.md)
+### 文档
 
-每个小工具都可以独立使用。仓库不包含实际客人的订单、付款凭证、联系方式或管理密钥。
-
-MIT License
+- [自部署版功能与使用流程](./paidan-booking/README.md)
+- [手动安装与升级](./paidan-booking/DEPLOYMENT.md)
+- [AI Agent 安装与接入](./paidan-booking/AGENT_SETUP.md)
+- [值守与邮件配置](./paidan-booking/WATCHER.md)
+- [私有图片存储](./IMAGE_STORAGE.md)
+- [公共版规则](./public-service/README.md) · [Android 客户端与构建](./android-app/README.md)
 
 ---
 
-旧预约关联仅包含未取消的记录；已取消订单不会出现在待关联搜索，也不能由后台新增关联。本人下单后再取消的历史记录仍保留已取消状态。
-
-登录前只显示居中的共用登录框；客人登录进入自己的预约，摄影师以 `admin` 和自行设置的网页登录密码进入管理后台。网页登录密码可使用独立的 `ADMIN_LOGIN_PASSWORD`，值守脚本继续使用原 `ADMIN_KEY`。项目不提供默认公开密码。
-
 ## English
 
-Overview cards show booking counts; inside the order list they show recorded receipts and outstanding amounts for the event. Deposits count toward receipts, balances toward outstanding amounts, cancelled orders are excluded, and free bookings contribute zero. Missing historical amounts are flagged separately, without substituting the current unit price or guessing from notes.
+**Photography Booking Assistant is an open-source, self-hosted photography booking and scheduling system for cosplay shoots and conventions.** Clients complete a booking form and choose an available time slot. The backend records the appointment and reserves the slot, while the photographer manages schedules, payment records, and optional background notifications.
 
+This repository contains one photography booking product: a self-hosted web application, a hosted service edition, and an Android client. Automatic scheduling reserves the client's selected available slot and prevents double booking; it does not rearrange existing appointments. The web interface works on desktop and mobile.
 
-The admin landing page summarizes all events: valid bookings, recorded receipts, outstanding amounts and distinct client CNs. Monthly charts group bookings by shoot date, with payment-status and event summaries. Select an event to open its schedule. Chart points show values on hover, keyboard focus or tap. Bulk payment dialogs scroll internally with a separate opaque action footer.
+### From booking to shoot
 
-In the full order list, click Link at the top right to reveal selection checkboxes and Cancel/Confirm actions. Paid/unpaid lists keep keyword search. Click Bulk payment update beside the search field to reveal checkboxes and Cancel/Confirm actions for paid, unpaid, deposit or free status. Cancel or save exits selection mode. Review each amount before confirming. Existing amounts, discount reasons and evidence are retained by default; missing historical amounts must be supplied. Cancelled rows are excluded. Each batch supports up to 50 rows, saves atomically, and deduplicates retries.
+1. **Publish an event.** Set its year, name, shoot dates, time slots, prices, instructions, and contact details. Preview the client page before publishing.
+2. **Let clients book.** Share the link. Clients choose a slot and enter their cosplay name or nickname (CN), contact details, character, and notes, with an optional reference image. Submission creates a booking ID and reserves the slot.
+3. **Manage the schedule.** Review daily appointments, record payments, update records, and archive finished events without losing their history.
 
+In the self-hosted edition, clients register with their CN and sign in to see bookings across events. Saved CN and phone details prefill later forms. Clients can open booking details, copy their booking ID, download a receipt image, and confirm cancellation. Older bookings can be linked to an account: CN-only links expose just the event, CN, and character; matching the original phone number or booking ID grants normal booking access. Cancelled records cannot be newly linked.
 
-# photo-tools · Photography Booking & Self-Service Scheduling
+### Photographer dashboard
 
-**An open-source, self-hosted appointment booking and scheduling tool for photographers, cosplay shoots, and conventions.** Clients fill out a booking form and choose an available time slot. The backend creates the booking and reserves that slot, while the photographer manages the schedule, payment records, and notifications in an admin dashboard.
-
-Works in desktop and mobile browsers. Automatic scheduling means reserving the client's chosen available slot and preventing double booking; it does not move appointments or choose a different time for the client.
-
-| Tool | What it does |
+| Feature | What you can do |
 | --- | --- |
-| [Photography Booking](./paidan-booking) | Client booking forms, automatic slot reservation, a photographer dashboard, and optional background notifications. |
+| Event schedules and archives | Organize events by year, view a multi-day desktop schedule, and use drawer navigation on mobile. |
+| Overview and trends | See valid bookings, recorded receipts, outstanding amounts, and distinct client CNs. Hover or tap chart points for values. |
+| Orders and payment records | View counts in the overview and amounts inside paid/unpaid lists; record deposits, complimentary bookings, discounts and evidence, with confirmed bulk status updates. |
+| Reference images and evidence | Upload images and optionally use private image storage with booking or admin access checks. |
+| Client accounts and older bookings | Let clients view their booking history and let photographers assign older records to registered accounts. |
 
-**You can also apply for our hosted service.** [Open the application page](https://public-paidan.nyachu.site/app) or [download the Android APK](https://public-paidan.nyachu.site/download/app.apk). Accounts and quotas require explicit operator approval; nothing is allocated automatically. The initial service admits at most three approved accounts. See [hosted service rules](./public-service/README.md#english). Self-hosting the original version uses your own resources and does not require an allocation from our hosted service.
+Deposits count toward receipts, remaining balances toward outstanding amounts, and free bookings contribute zero. Cancelled orders are excluded from monetary summaries. Missing historical amounts are flagged rather than inferred from current prices or numbers in notes.
 
-### Self-service booking and schedule management
+**Payment tracking records your own checks; it does not collect or charge money.** A client's “Confirmed” action notifies the photographer to verify payment. See the [full feature guide](./paidan-booking/README.md#english).
 
-The photographer configures an event's dates, time slots, pricing, instructions, and contact details, previews the client page, and publishes it. Clients open the link, select a slot, and enter their cosplay name or nickname (CN), character, and other booking details. The backend records the appointment and reserves the slot.
+### Optional background notifications
 
-- **Client self-service:** booking forms, reference image uploads, booking lookup, and cancellation.
-- **Photographer dashboard:** events organized by year, daily schedules, and filterable lists of active, paid, and unpaid bookings.
-- **Payment records:** standard pricing, complimentary bookings, discounts with reasons and optional evidence, and deposit records.
-- **Optional private image storage:** keep reference images and payment evidence in a separate private bucket, with the existing access controls; orders and slot locks remain in the database. See [image storage setup](./IMAGE_STORAGE.md).
-- **Event archives:** stop new bookings while keeping existing records available for notes and payment updates.
-- **Mobile and desktop layouts:** a mobile navigation drawer and a desktop sidebar with a multi-day schedule.
-
-#
-The self-hosted edition now includes client signup/login (use the client CN as the username), account-scoped booking history, saved CN/phone prefill, copyable booking IDs and downloadable booking receipts. The client page uses a full-window layout, an account profile in the sidebar, and a compact clickable My Bookings table with a mobile drawer. The photographer schedule remains a daily calendar. Hosted service/APK releases are maintained separately.
-
-Clients search all events by exact CN, with optional phone and booking-ID filters, then select and confirm links. Linked rows are disabled. CN-only links show only the event, CN and character; a matching original phone or booking ID grants normal booking access. Photographers can also select older records in the admin list and assign them to a registered client account after confirmation, without filling in missing phone numbers or recreating bookings.
-
-
-## Optional background notifications
-
-Enable background notifications in the admin settings to receive alerts for **new bookings, cancellations, and client-reported payments**. Notifications run on the server, continue after the page is closed, and use bounded retries on delivery failures.
+Enable notifications in the admin settings to receive alerts for **new bookings, cancellations, and client-reported payments**. Delivery runs on the server, continues after the browser or your computer is closed, and uses bounded retries on failure.
 
 | Channel | Your configuration |
 | --- | --- |
 | Generic Webhook | An HTTPS receiver URL and an optional authentication token. |
 | WeCom | A group bot Webhook URL. |
-| Feishu | A group bot Webhook URL. |
+| Feishu | A custom bot Webhook URL. |
 | Telegram | A bot token and chat ID. |
-| **Email** | A Resend API key, a sender address on a verified domain, and a recipient address. |
+| Email | A Resend API key, a sender address on a verified domain, and a recipient address. |
 
-Each instance currently uses one channel, chosen and configured by its owner. No author's QQ account or other personal account is required. Email can be delivered to mailboxes such as QQ Mail, 163, or Gmail, but sending uses Resend rather than a mailbox password or SMTP authorization code.
+Each instance currently uses one channel chosen by its owner. No author's QQ or other personal account is required. Email can go to mailboxes such as QQ Mail, 163, or Gmail; sending uses Resend rather than a mailbox password or SMTP authorization code.
 
-Notifications are off by default, and credentials start blank. Saving settings and sending a test message require confirmation. Automated tests cover simulated delivery, retries, and UI interactions. **You must test actual receipt with your own configured destination.** A successful email API response does not prove delivery to an inbox; check the inbox, spam folder, or sending service's records.
+Notifications are off by default and credentials start blank. Automated tests cover simulated delivery and retries. **Verify actual receipt using your own destination.** An accepted email API request is not proof of inbox delivery. See [notification and email setup](./paidan-booking/WATCHER.md) (Chinese).
 
-See [notification and email setup](./paidan-booking/WATCHER.md) (Chinese). A client's “Confirmed” action sends a notification for the photographer to check; it does not confirm payment. This is a record-keeping tool, not a payment processor, and it does not charge clients.
-
-**Have your own agent?** It can ask where notifications should go and which events matter, then configure a built-in channel or implement your own Webhook receiver or scheduled polling script. The [agent integration guide](./paidan-booking/AGENT_SETUP.md) (Chinese) covers the APIs, persistent deduplication, and avoiding duplicate alerts from multiple tasks.
-
-### Installation: with or without an AI agent
-
-**No AI agent is required.** Once deployed, the backend handles booking, lookup, scheduling, and built-in notifications. You do not need to keep your computer or an AI assistant running.
-
-| Your setup | Guide | Steps |
-| --- | --- | --- |
-| Apply for the hosted service | [Hosted service and APK guide](./public-service/README.md#english) | Install or open the website → apply → wait for approval and quota allocation → create an event and share your own booking link. |
-| Install it yourself, without an AI agent | [Manual installation guide](./paidan-booking/DEPLOYMENT.md) (Chinese) | Download → install tools → create your own storage → deploy → set an admin key → publish your first event → optionally configure notifications. |
-| Ask your AI agent to help | [AI agent setup guide](./paidan-booking/AGENT_SETUP.md) (Chinese) | Share the repository and task → choose your account and notification destination → complete login and secret entry yourself → have the agent deploy and verify. |
-
-You can download the ZIP without a GitHub account. A GitHub account alone does not start an agent or a monitoring task. The repository includes a Cloudflare deployment example; other platforms require backend adaptation. Both installation routes use the same code and start with an empty instance. The application interface and detailed setup guides are currently in Chinese.
+An optional AI agent can help configure a built-in channel or write your own Webhook receiver or polling script after asking where alerts should go. See the [agent integration guide](./paidan-booking/AGENT_SETUP.md) (Chinese). **Bookings and built-in notifications require no AI agent or AI API key.**
 
 ### Start with your own data
 
-A fresh deployment contains no preset events, archives, client bookings, payment records, author contact details, or notification credentials. Set your own admin key and publish your first event before client booking opens.
+A fresh deployment includes no author's events, archives, client orders, payment evidence, contact details, admin passwords, or notification credentials. Configure your own secrets and publish your first event to open bookings.
 
-Deployment needs a backend and persistent storage. The included example uses Cloudflare; you can adapt the code for your own server and database. Uploading only the HTML files to static hosting will not provide working bookings or notifications.
+### Use or install
 
-- [Full features and workflow](./paidan-booking/README.md#english)
-- [Manual installation](./paidan-booking/DEPLOYMENT.md) (Chinese)
-- [AI agent installation and integration](./paidan-booking/AGENT_SETUP.md) (Chinese)
-- [Notifications and email configuration](./paidan-booking/WATCHER.md) (Chinese)
+| Your situation | Edition | Next step |
+| --- | --- | --- |
+| Use a service without deploying | Hosted website or Android client | [Apply for an account](https://public-paidan.nyachu.site/app) or [download the APK](https://public-paidan.nyachu.site/download/app.apk). Wait for operator approval and quota allocation; additional quota also requires approval. |
+| Control your own deployment and data | Self-hosted web application | Follow the [manual installation guide](./paidan-booking/DEPLOYMENT.md) (Chinese) to create storage, deploy, configure secrets, and publish your first event. |
+| Have an AI agent assist with installation | The same self-hosted application | Follow the [agent setup guide](./paidan-booking/AGENT_SETUP.md) (Chinese), confirm your account and notification destination, and enter credentials yourself. |
 
-Tools can be used independently. The repository does not include real client records, payment evidence, contact details, or admin secrets.
+The hosted edition has its own backend and release scope; see [hosted service rules](./public-service/README.md#english). **The APK requires internet access and connects to the hosted service. It has no offline booking mode or native push notifications.** Clients can use a photographer's booking link without installing the app. Self-hosting uses your own resources and does not require hosted-service quotas.
 
-MIT License
+Download the repository ZIP without a GitHub account, or clone it:
 
-Previous-booking linking excludes cancelled records, including operator assignments. Bookings made by the current account and subsequently cancelled remain in its history with their cancelled status.
+```sh
+git clone https://github.com/birdisleeee/photography-booking-assistant.git
+cd photography-booking-assistant/paidan-booking
+```
 
-Before login, only one centered form is shown. Clients enter their booking workspace; the photographer signs in as `admin` to reach the dashboard. Configure your own `ADMIN_LOGIN_PASSWORD` separately from the existing script `ADMIN_KEY`; if omitted, the latter is used for backward compatibility. No shared default password is shipped. Sessions and permissions remain separate.
+Continue with the [deployment guide](./paidan-booking/DEPLOYMENT.md) (Chinese). A Cloudflare deployment example is included. Other servers and databases require backend adaptation; static HTML hosting alone cannot run bookings, accounts, or notifications. The application interface and detailed setup guides are currently in Chinese.
+
+### Documentation
+
+- [Self-hosted features and workflow](./paidan-booking/README.md#english)
+- [Manual installation and upgrades](./paidan-booking/DEPLOYMENT.md) (Chinese)
+- [AI agent setup and integration](./paidan-booking/AGENT_SETUP.md) (Chinese)
+- [Notifications and email](./paidan-booking/WATCHER.md) (Chinese)
+- [Private image storage](./IMAGE_STORAGE.md)
+- [Hosted service](./public-service/README.md#english) · [Android client and build instructions](./android-app/README.md#english)
+
+## License
+
+[MIT](./LICENSE)

@@ -22,13 +22,13 @@ Windows 可以使用 PowerShell 或命令提示符，macOS/Linux 使用终端。
 
 ## 2. 下载并进入项目目录
 
-打开 [项目仓库](https://github.com/birdisleeee/photo-tools)，选择绿色的 **Code → Download ZIP**，完整解压。进入其中的 `paidan-booking` 文件夹，在该文件夹打开终端。
+打开 [项目仓库](https://github.com/birdisleeee/photography-booking-assistant)，选择绿色的 **Code → Download ZIP**，完整解压。进入其中的 `paidan-booking` 文件夹，在该文件夹打开终端。
 
 如果已经安装 Git，也可以执行：
 
 ```sh
-git clone https://github.com/birdisleeee/photo-tools.git
-cd photo-tools/paidan-booking
+git clone https://github.com/birdisleeee/photography-booking-assistant.git
+cd photography-booking-assistant/paidan-booking
 ```
 
 后续命令都在 `paidan-booking` 目录执行。确认这里能看到 `wrangler.jsonc`、`worker.js`、`backend.js`、`watch-runtime.js`、`private-security.js`、`customer-accounts.js`、`index.html` 和 `admin.html`。不要只下载两个 HTML 文件。
